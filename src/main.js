@@ -1,7 +1,13 @@
 
 import { gsap } from "gsap";
+import SplitText from "gsap-trial/SplitText";
+
+import { Draggable } from "gsap/Draggable";
+gsap.registerPlugin(Draggable, SplitText)
+
 
 class MusicPlayer {
+
 
   // Explication : Le constructeur est la première fonction lancée quand la Classe est instanciée. On y initialise les propriété, et appelle des fonctions.
   constructor() {
@@ -9,7 +15,7 @@ class MusicPlayer {
     // TODO DRAGGABLE : On va vouloir ajouter une propriété "img" à chaque objet, et y inscrire le lien de l'image que l'on veut charger. 
     // Pense bien à mettre tes images dans le dossier "public"
     this.tracks = [
-      { id: 1, title: "Temps Mort", url: "./album/tempsMort.mp3" },
+      { id: 1, title: "White Ferrari", url: "./album/WhiteFerrari.mp3", src: "./public/ocean.png" },
       { id: 2, title: "Indépendants", url: "./album/indpendants.mp3" },
       { id: 3, title: "Écoute Bien", url: "./album/ecouteBien.mp3" },
     ];
@@ -32,6 +38,10 @@ class MusicPlayer {
     this.cacheDOM();
     this.bindEvents();
     this.loadTrack();
+    this.parallaxeffect();
+    this.createSplitText();
+    this.draggableStickers();
+
   }
 
   // Bug: Il y a des soucis dans cette fonction : regarde bien le nom des selecteurs.
@@ -64,9 +74,10 @@ class MusicPlayer {
 
     }
 
+
     this.audio.src = this.tracks[this.currentTrackIndex].url; // Bug: mauvais attribut
     this.trackTitle.textContent = this.tracks[this.currentTrackIndex].title;
-    // this.animateTitle();
+    this.createSplitText();
   }
 
   togglePlay() {
@@ -89,6 +100,7 @@ class MusicPlayer {
     this.loadTrack()
     this.audio.play();
     this.isPlaying = true
+
   }
 
   prevTrack() {
@@ -104,11 +116,11 @@ class MusicPlayer {
 
     gsap.fromTo('#vinyl', {
       rotate: this.currentAngle,
-    },{
-      rotate: this.currentAngle+90,
+    }, {
+      rotate: this.currentAngle + 90,
       duration: 2,
       ease: 'power1.out',
-      onComplete : () => {
+      onComplete: () => {
         gsap.killTweensOf('#vinyl')
       }
     })
@@ -119,26 +131,103 @@ class MusicPlayer {
 
     gsap.fromTo('#vinyl', {
       rotate: this.currentAngle,
-    },{
-      rotate: this.currentAngle+90,
+    }, {
+      rotate: this.currentAngle + 90,
       duration: 2.2,
       ease: 'power1.in',
-      onComplete : () => {
+      onComplete: () => {
         this.rotateLoop()
       }
     })
   }
 
-  rotateLoop () {
+  rotateLoop() {
     this.currentAngle = gsap.getProperty('#vinyl', 'rotation')
 
-        gsap.to('#vinyl', {
-          rotate : this.currentAngle + 360,
-          duration : 5,
-          ease : 'linear',
-          repeat : -1
-        })
+    gsap.to('#vinyl', {
+      rotate: this.currentAngle + 360,
+      duration: 5,
+      ease: 'linear ',
+      repeat: -1
+    })
   }
+
+  
+  
+
+
+
+  parallaxeffect() {
+    let mouseX, mouseY;
+
+    document.addEventListener("mousemove", e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      gsap.to("#ocean", { 
+        xPercent: -50,
+        yPercent: -50,
+        x: (mouseX / window.innerWidth - 0.5) * 50,
+        y: (mouseY / window.innerHeight - 0.5) * 50,
+        delay: 0.1,
+        ease: "power2.out",
+        overwrite: "auto"
+      });
+    });
+
+  }
+
+
+  createSplitText() {
+    var split = new SplitText("#track-title", { type: "chars" });
+    gsap.from(split.chars, {
+      duration: 0.70,
+      y: 100,
+      autoAlpha: 0,
+      stagger: 0.05
+    });
+  }
+
+  setupCover() {
+    this.tracks.forEach(track => {
+      const li = document.createElement("li")
+      const img = document.createElement("img")
+      img.classList.add('coverImage')
+      img.src = 
+      this.playlist.appendChild(li)
+      li.appendChild(img)
+ 
+    });
+
+  draggableStickers() {
+
+    Draggable.create("#blondStickers", {
+      type: "x,y",
+      inertia: true,
+      onClick: function () {
+        console.log("clicked");
+      },
+      onDragEnd: function () {
+        console.log("drag ended");
+      },
+    });
+
+
+  }
+  
+  
+
+  
+
+
+
+
+
+
+
+
+
+
 
 
 
