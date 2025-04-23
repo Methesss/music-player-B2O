@@ -18,17 +18,16 @@ body {
 #ocean {
   position: absolute;
   align-items: center;
-  width: 100%; /* Ajuste à la taille du parent */
+  width: 100%; 
   height: 100%;
-  z-index: 1; /* Derrière */
+  z-index: 1; 
 }
 
 #fond {
   position: relative;
-  z-index: 2; /* Devant */
+  z-index: 2; 
 }
-#navbar{
-  }
+
 
 ul {
   list-style-type: none;
